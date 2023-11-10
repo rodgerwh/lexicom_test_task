@@ -1,6 +1,6 @@
+import aioredis
 from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel
-import aioredis
 
 app = FastAPI(
     title="Lexicom Test Assignment",

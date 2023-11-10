@@ -1,0 +1,41 @@
+services:
+  lexicom_phonebook:
+    depends_on:
+      - lexicom_redis
+    container_name: lexicom_phonebook
+    restart: always
+    volumes:
+      - ./phonebook:/phonebook
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:80"
+    command: bash -c "pytest tests; uvicorn main:app --host 0.0.0.0 --port 80 --reload"
+
+  lexicom_redis:
+    container_name: lexicom_redis
+    image: "redis:latest"
+    restart: always
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+
+  lexicom_psql:
+    container_name: lexicom_psql
+    image: "postgres:latest"
+    restart: always
+    environment:
+      POSTGRES_HOST: lexicom_psql
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+    volumes:
+      - lexicom_psql:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  redis_data:
+  lexicom_psql:
